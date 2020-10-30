@@ -2,6 +2,9 @@ const inquirer = require("inquirer");
 const generateMarkdown = require("./utils/generateMarkdown");
 const axios = require("axios");
 const fs = require("fs");
+const util = require('util');
+
+const api = require('./utils/api.js');
 
 // Require all npm packages and files
 
@@ -10,57 +13,74 @@ const questions = [
     {
         type: "input",
         message: "What is your GitHub user name?",
-        name: "username"
+        name: "username",
+        validate: function (answer) {
+            if (answer.length < 1) {
+                return console.log("A valid GitHub username is required.");
+            }
+            return true;
+        }
     },
 
     {
         type: "input",
         message: "What is your project Title?",
         name: "title",
-        default: "Generate a README.md file "
+        validate: function (answer) {
+            if (answer.length < 1) {
+                return console.log("A valid title for your project is required.");
+            }
+            return true;
+        }
     },
 
     {
         type: "input",
         message: "What is your repo called?",
         name: "repo",
-        default: "GoodREADMEGenerator"
+        validate: function (answer) {
+            if (answer.length < 1) {
+                return console.log("A valid GitHub repo is required for a badge.");
+            }
+            return true;
+        }
     },
 
     {
         type: "input",
         message: "How do you describe your Project?.",
         name: "description",
-        default: " This application will generate a README.md file for your current project"
     },
 
     {
         type: "input",
         message: "What are the steps required to install your project?",
         name: "install",
-        default: "Step1: Run npm install and Step2: Run node index.js"
     },
 
     {
         type: "input",
         message: "Write instructions for using your project.",
         name: "usage",
-        default:
-            "1.Run node index.js 2.Answers the questions 3.The README.md file will be created. "
     },
 
     {
         type: "input",
         message: "please enter git hub user names of the contributor if any (If there are mulitple contributor, seperate names with comma and no space! )",
         name: "contributors",
-        default: " Robert McKenney, Abdul Amoud and Igor Calvacante"
     },
 
     {
         type: "input",
         message: "Provide examples on how to run tests.",
         name: "test",
-        default: "Include your tests sample here."
+    },
+
+    {
+        type: 'list',
+        message: "Choose a license for your project.",
+        choices: ['GNU AGPLv3', 'GNU GPLv3', 'GNU LGPLv3', 'Mozilla Public License 2.0', 'Apache License 2.0', 'MIT License', 'Boost Software License 1.0', 'The Unlicense'],
+        name: 'license',
     }
 ];
 
